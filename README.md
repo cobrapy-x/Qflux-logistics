@@ -1,7 +1,8 @@
 # Delivery Routing: Classical vs QAOA
 
 **Team:** Qflux-logistics — Agrim Raj, Srijat Mukhopadhyay
-**Event:** Qiskit Fall Fest Hackathon 2026 (IISER Bhopal) · **Problem 06:** A routing problem: deliveries on a small map
+**Event:** Qiskit Fall Fest Hackathon 2026 (IISER Bhopal) ·
+**Problem 06:** A routing problem: deliveries on a small map
 
 We encode delivery routing as a QUBO, solve it with QAOA on an ideal simulator, on a
 noise model of an IBM chip and on a real IBM quantum computer, and compare every result
