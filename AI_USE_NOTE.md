@@ -4,11 +4,11 @@
 ## Tools used
 
 - **Claude (Anthropic), in the Claude Cowork desktop app.** Planning, most of the Python code,
-  debugging, the dashboard, the README .
+  debugging, the dashboard, the README.
 - **IBM Quantum Platform / Qiskit Runtime:** running the circuit on real hardware.
 
 We reviewed the code, ran every experiment ourselves, and checked results against exact
-classical references (`tests/`, 27 checks). 
+classical references (`tests/`, 27 checks).
 
 ## One thing the AI got wrong, and how we caught it
 
@@ -21,7 +21,7 @@ distances), and it had **no capacity rule**. On the simulator, QAOA's best plans
   every possible split, each van routed exactly with Held–Karp. A correct encoding's optimum
   should match that check, and it didn't.
 - **Why it happened:** with no capacity limit, the cheapest plan is usually one van doing
-  every stop. Taking a shortcut never makes a route longer .
+  every stop. Taking a shortcut never makes a route longer.
 - **Fix:** a capacity penalty (van B takes exactly ⌊k/2⌋ stops) and Clarke–Wright savings as the
   weights. The exhaustive check now finds that QAOA's best sampled plan matches the optimum
   (gap 0.0%). `tests/test_experiments.py` and `tests/test_quantum_hardware.py` keep checking this.

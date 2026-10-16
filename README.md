@@ -1,7 +1,7 @@
 # Delivery Routing: Classical vs QAOA
 
-**Team:** Qflux-logistics — Agrim Raj, Srijat Mukhopadhyay
-**Event:** Qiskit Fall Fest Hackathon 2026 (IISER Bhopal) ·
+**Team:** Qflux-logistics — Agrim Raj, Srijat Mukhopadhyay\
+**Event:** Qiskit Fall Fest Hackathon 2026 (IISER Bhopal)\
 **Problem 06:** A routing problem: deliveries on a small map
 
 We encode delivery routing as a QUBO, solve it with QAOA on an ideal simulator, on a
@@ -9,12 +9,18 @@ noise model of an IBM chip and on a real IBM quantum computer, and compare every
 with exact classical solvers. The main experiment splits 9 real delivery stops in Kolkata
 between two vans. It uses one qubit per stop (8 qubits); a classical solver then routes each
 van exactly. QAOA raises the share of valid plans from 27% (random guessing) to about 61%,
-and the optimal plan appears in every quantum run. **There is no quantum advantage:** a
+and the optimal plan appears in every quantum run. On the real IBM device
+**ibm_marrakesh**, 45.0% of shots were valid plans: lower than the noise model
+predicted (56.2%), but still well above random guessing. **There is no quantum advantage:** a
 classical heuristic finds the same optimal plan in under a millisecond. We measure where
 the quantum approach breaks down: (n−1)² qubits for a full route, valid answers become
 vanishingly rare, and circuit depth and noise grow quickly.
 
 ![Main result](figures/main_result.png)
+
+**Real-hardware run (bonus):** backend `ibm_marrakesh`, job ID `db7i1uor1c5c738kk5q0`,
+2026-10-14, 4,000 shots, 3 s of quantum time, dynamical decoupling + gate twirling.
+Raw counts: [`results/hardware_run.json`](results/hardware_run.json).
 
 ---
 
@@ -28,7 +34,7 @@ vanishingly rare, and circuit depth and noise grow quickly.
 | AI-use note | [`AI_USE_NOTE.md`](AI_USE_NOTE.md)  |
 | Tests | [`tests/`](tests): 27 checks against exact or classical references |
 | Pinned packages | [`requirements.txt`](requirements.txt) |
-| Raw numbers | [`results/summary.json`](results/summary.json) (and `results/hardware_run.json` after a hardware run) |
+| Raw numbers | [`results/summary.json`](results/summary.json); real IBM run: [`results/hardware_run.json`](results/hardware_run.json) |
 
 ---
 
@@ -52,7 +58,8 @@ python writeup/build_writeup.py                   # ~2 s, rebuilds WRITEUP.pdf
 - `figures/main_result.png`: the main-result figure
 - `figures/route_qaoa_vs_random.png` and `figures/classical_scaling.png`: supporting figures
 
-and prints a summary table like this one (simulator rows; exact timings vary by machine):
+and prints a summary table like this one (exact timings vary by machine). The IBM row is read
+from the saved `results/hardware_run.json`, so it reproduces without an account:
 
 ```
 Main result: two vans, 10 Kolkata places, 8 qubits, p = 1
@@ -62,6 +69,7 @@ Main result: two vans, 10 Kolkata places, 8 qubits, p = 1
   random guess                   27.3% ±0.0     0.39% ±0.00
   ideal simulator                61.0% ±0.8     1.05% ±0.16
   noisy simulator (3 runs)       56.2% ±0.2     0.89% ±0.20
+  IBM ibm_marrakesh              45.0% ±0.8     0.75% ±0.14
 ```
 
 ### Seeds and statistics

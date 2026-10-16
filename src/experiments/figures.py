@@ -25,18 +25,18 @@ def _sources(main: dict) -> list[tuple[str, str, dict]]:
     """(label, colour, numbers) for every source we have results for."""
     rows = [("Random\nguess", GREY, {"p_valid": main["random"]["p_valid"], "p_best": main["random"]["p_best"]}),
             ("Ideal\nsimulator", BLUE, main["ideal_sampled"]),
-            (f"Noisy sim.\n{main['noisy']['backend']}", ORANGE,
+            (f"Noisy\nsimulator\n{main['noisy']['backend']}", ORANGE,
              {**main["noisy"], "p_valid_se": main["noisy"]["p_valid_sd"], "p_best_se": main["noisy"]["p_best_sd"]})]
     hw = main.get("hardware")
     if hw:
-        rows.append((f"IBM hardware\n{hw['backend']}", AQUA, hw))
+        rows.append((f"IBM\nhardware\n{hw['backend']}", AQUA, hw))
     return rows
 
 
 def main_result_figure(summary: dict, path) -> None:
     main = summary["main"]
     rows = _sources(main)
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 4.4), gridspec_kw={"width_ratios": [1, 1, 1.25]})
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 4.8), gridspec_kw={"width_ratios": [1.1, 1.1, 1.25]})
 
     for ax, key, title in ((ax1, "p_valid", "Shots that obey the van-capacity rule"),
                            (ax2, "p_best", "Shots that are the optimal plan")):
@@ -47,7 +47,8 @@ def main_result_figure(summary: dict, path) -> None:
             ax.annotate(f"{r[key] * 100:.1f}%" if r[key] >= 0.01 else f"{r[key] * 100:.2f}%",
                         (i, r[key] * 100 + (err * 100 if err else 0)), ha="center", va="bottom",
                         fontsize=9, color=INK, xytext=(0, 3), textcoords="offset points")
-        ax.set_xticks(range(len(rows)), [r[0] for r in rows], fontsize=8)
+        # three short lines per label, so long backend names never run into each other
+        ax.set_xticks(range(len(rows)), [r[0] for r in rows], fontsize=7.5, linespacing=1.15)
         ax.set_ylabel("% of shots")
         ax.set_title(title, fontsize=10, color=INK, loc="left")
         ax.grid(axis="x", visible=False)
@@ -92,6 +93,7 @@ def route_figure(summary: dict, path) -> None:
         ax.annotate(f"{r['p_optimal'] / r['p_optimal_random']:.0f}x", (i + 0.2, (r["p_optimal"] + r["p_optimal_sd"]) * 100),
                     xytext=(0, 8), textcoords="offset points", ha="center", fontsize=9, color=INK)
     ax.set_xticks(list(x), labels, fontsize=8)
+    ax.set_ylim(0, max((r["p_optimal"] + r["p_optimal_sd"]) * 100 for r in rows) * 1.22)   # room for labels
     ax.set_ylabel("chance one shot is the optimal route (%)")
     ax.set_title("Full-route encoding: QAOA beats guessing, but rarely returns the optimum",
                  fontsize=10, color=INK, loc="left")

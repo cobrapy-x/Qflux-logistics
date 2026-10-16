@@ -39,6 +39,13 @@ BUL = ParagraphStyle("Bul", parent=P, leftIndent=10, bulletIndent=0, spaceAfter=
 CELL = ParagraphStyle("Cell", parent=P, fontSize=8.2, leading=10, spaceAfter=0)
 
 
+def _figure(path, width):
+    """An image scaled to `width`, keeping the file's own aspect ratio."""
+    from reportlab.lib.utils import ImageReader
+    w, h = ImageReader(str(path)).getSize()
+    return Image(str(path), width=width, height=width * h / w)
+
+
 def pct(x, d=1):
     return f"{x * 100:.{d}f}%"
 
@@ -119,7 +126,7 @@ def build() -> None:
 
     # ---------------- results ----------------
     story += [Paragraph("3. Results", H2),
-              Image(str(ROOT / "figures" / "main_result.png"), width=17.4 * cm, height=17.4 * cm * 659 / 2008),
+              _figure(ROOT / "figures" / "main_result.png", 17.4 * cm),
               Paragraph("<b>Figure 1 (main result).</b> Share of shots that obey the capacity rule (left) and that are "
                         "the optimal plan (middle), with binomial standard errors (noisy simulator: spread over "
                         "3 seeds). Right: the optimal plan.", CAP), Spacer(1, 4)]
@@ -149,7 +156,11 @@ def build() -> None:
                + (f", {hw['qpu_seconds']} s of quantum time" if hw.get("qpu_seconds") else "")
                + f") {pct(hw['p_valid'])} of shots were valid and {pct(hw['p_best'], 2)} were the optimal plan, "
                f"compared with {pct(noisy['p_valid'])} and {pct(noisy['p_best'], 2)} for the noise model and "
-               f"{pct(idx['p_valid'])} and {pct(idx['p_best'], 2)} for the ideal simulator."
+               f"{pct(idx['p_valid'])} and {pct(idx['p_best'], 2)} for the ideal simulator. "
+               + ("The real chip lost more than the noise model predicted, but stayed clearly above random "
+                  "guessing; the noise model is optimistic for this circuit."
+                  if hw["p_valid"] < noisy["p_valid"] - 2 * max(hw["p_valid_se"], noisy["p_valid_sd"])
+                  else "The real chip matched the noise model within the error bars.")
                if hw else "No real-hardware run is included in this version (see run_hardware.py).")
     story.append(Paragraph(
         f"QAOA concentrates probability on good answers: valid splits rise from {pct(m['random']['p_valid'])} "
@@ -160,7 +171,7 @@ def build() -> None:
         f"under a millisecond. {hw_text}", P))
 
     story.append(KeepTogether([
-        Image(str(ROOT / "figures" / "route_qaoa_vs_random.png"), width=8.4 * cm, height=8.4 * cm * 0.546),
+        _figure(ROOT / "figures" / "route_qaoa_vs_random.png", 8.4 * cm),
         Paragraph(f"<b>Figure 2.</b> Full-route encoding, ideal simulator, mean ± s.d. over random maps. With 4 cities "
                   f"(9 qubits) one shot is optimal {pct(r4['p_optimal'])} of the time ({r4['p_optimal'] / r4['p_optimal_random']:.0f}× "
                   f"random); with 5 cities (16 qubits) only {pct(r5['p_optimal'], 2)}. Held–Karp solves both exactly in "
