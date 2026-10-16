@@ -22,9 +22,9 @@ vanishingly rare, and circuit depth and noise grow quickly.
 | Required | Where |
 |---|---|
 | Code | [`src/`](src) (one folder per part, see [layout](#repository-layout)) |
-| Write-up (2–4 pages) | [`WRITEUP.pdf`](WRITEUP.pdf), built from the results by `writeup/build_writeup.py` |
+| Write-up (2–4 pages) | [`WRITEUP.pdf`](WRITEUP.pdf)  |
 | Main-result figure | [`figures/main_result.png`](figures/main_result.png) (+ 2 supporting figures) |
-| AI-use note | [`AI_USE_NOTE.md`](AI_USE_NOTE.md) (also summarised in the write-up) |
+| AI-use note | [`AI_USE_NOTE.md`](AI_USE_NOTE.md)  |
 | Tests | [`tests/`](tests): 27 checks against exact or classical references |
 | Pinned packages | [`requirements.txt`](requirements.txt) |
 | Raw numbers | [`results/summary.json`](results/summary.json) (and `results/hardware_run.json` after a hardware run) |
